@@ -3,7 +3,7 @@ package com.telecom.tsms.service;
 public class UserService {
 
     public void createUser(){
-        System.out.println("User created");
+        System.out.println("Creating user with validation");
     }
 
 }
