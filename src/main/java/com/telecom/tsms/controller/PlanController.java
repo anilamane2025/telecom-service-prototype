@@ -39,8 +39,8 @@ public class PlanController {
     }
 
     @GetMapping("/type/{planType}")
-    public ResponseEntity<List<PlanResponse>> getPlansByType(@PathVariable String type){
-        List<PlanResponse> plans = planService.getPlansByType(type);
+    public ResponseEntity<List<PlanResponse>> getPlansByType(@PathVariable String planType){
+        List<PlanResponse> plans = planService.getPlansByType(planType);
         return ResponseEntity.ok(plans);
     }
 
