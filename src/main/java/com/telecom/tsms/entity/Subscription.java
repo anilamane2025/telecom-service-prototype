@@ -1,5 +1,6 @@
 package com.telecom.tsms.entity;
 
+import com.telecom.tsms.enums.SubscriptionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,9 +27,13 @@ public class Subscription {
     @JoinColumn(name = "plan_id",nullable = false)
     private TelecomPlan telecomPlan;
 
-    @Column(name="activation_date",nullable = false)
+    @Column(name = "activation_date",nullable = false)
     private LocalDate activationDate;
 
+    @Column(name = "expiry_date",nullable = false)
+    private LocalDate expiryDate;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false,length = 20)
-    private String status;
+    private SubscriptionStatus status;
 }
