@@ -1,5 +1,6 @@
 package com.telecom.tsms.entity;
 
+import com.telecom.tsms.enums.KycStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,7 +32,8 @@ public class Customer {
     @Column(length = 50)
     private String state;
 
+    @Enumerated(EnumType.STRING)
     @Column(name= "kyc_status",length = 30)
-    private String kycStatus;
+    private KycStatus kycStatus;
 
 }

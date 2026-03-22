@@ -1,5 +1,6 @@
 package com.telecom.tsms.dto;
 
+import com.telecom.tsms.enums.KycStatus;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,6 @@ public class CustomerRequest {
     private String state;
 
     @Size(max=30,message = "KYC status must not exceed 30 characters")
-    private String kycStatus;
+    private KycStatus kycStatus;
 
 }

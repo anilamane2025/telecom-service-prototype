@@ -1,5 +1,6 @@
 package com.telecom.tsms.dto;
 
+import com.telecom.tsms.enums.KycStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +16,5 @@ public class CustomerResponse {
     private String mobileNumber;
     private String email;
     private String state;
-    private boolean kycStatus;
+    private KycStatus kycStatus;
 }
