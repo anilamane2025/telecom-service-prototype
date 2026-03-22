@@ -5,10 +5,11 @@ import com.telecom.tsms.dto.CustomerResponse;
 import com.telecom.tsms.entity.Customer;
 import com.telecom.tsms.exception.ResourceNotFoundException;
 import com.telecom.tsms.repository.CustomerRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
+@Service
 public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepository customerRepository;
@@ -67,6 +68,7 @@ public class CustomerServiceImpl implements CustomerService{
         return Customer.builder()
                 .customerCode(customerRequest.getCustomerCode())
                 .fullName(customerRequest.getFullName())
+                .mobileNumber(customerRequest.getMobileNumber())
                 .email(customerRequest.getEmail())
                 .state(customerRequest.getState())
                 .kycStatus(customerRequest.getKycStatus())
