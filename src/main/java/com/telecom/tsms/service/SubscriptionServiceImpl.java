@@ -9,10 +9,12 @@ import com.telecom.tsms.exception.ResourceNotFoundException;
 import com.telecom.tsms.repository.CustomerRepository;
 import com.telecom.tsms.repository.SubscriptionRepository;
 import com.telecom.tsms.repository.TelecomPlanRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public class SubscriptionServiceImpl implements SubscriptionService{
 
 

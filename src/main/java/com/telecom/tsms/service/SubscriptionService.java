@@ -3,6 +3,7 @@ package com.telecom.tsms.service;
 
 import com.telecom.tsms.dto.SubscriptionRequest;
 import com.telecom.tsms.dto.SubscriptionResponse;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
