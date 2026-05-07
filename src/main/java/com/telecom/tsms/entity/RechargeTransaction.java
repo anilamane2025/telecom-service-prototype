@@ -1,12 +1,17 @@
 package com.telecom.tsms.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "recharge_transaction" )
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RechargeTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
