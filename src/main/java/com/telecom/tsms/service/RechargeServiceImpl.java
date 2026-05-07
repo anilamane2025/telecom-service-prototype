@@ -9,11 +9,13 @@ import com.telecom.tsms.exception.ResourceNotFoundException;
 import com.telecom.tsms.repository.CustomerRepository;
 import com.telecom.tsms.repository.RechargeTransactionRepository;
 import com.telecom.tsms.repository.TelecomPlanRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class RechargeServiceImpl implements RechargeService{
 
     private final RechargeTransactionRepository rechargeTransactionRepository;
