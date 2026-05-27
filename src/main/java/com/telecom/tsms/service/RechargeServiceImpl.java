@@ -5,10 +5,13 @@ import com.telecom.tsms.dto.RechargeResponse;
 import com.telecom.tsms.entity.Customer;
 import com.telecom.tsms.entity.RechargeTransaction;
 import com.telecom.tsms.entity.TelecomPlan;
+import com.telecom.tsms.entity.User;
 import com.telecom.tsms.exception.ResourceNotFoundException;
 import com.telecom.tsms.repository.CustomerRepository;
 import com.telecom.tsms.repository.RechargeTransactionRepository;
 import com.telecom.tsms.repository.TelecomPlanRepository;
+import com.telecom.tsms.repository.UserRepository;
+import com.telecom.tsms.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,13 +25,17 @@ public class RechargeServiceImpl implements RechargeService{
     private final CustomerRepository customerRepository;
     private final TelecomPlanRepository telecomPlanRepository;
 
+    private final UserRepository  userRepository;
+
     public RechargeServiceImpl(RechargeTransactionRepository rechargeTransactionRepository,
                                CustomerRepository customerRepository,
-                               TelecomPlanRepository telecomPlanRepository){
+                               TelecomPlanRepository telecomPlanRepository,
+                               UserRepository userRepository){
 
         this.rechargeTransactionRepository = rechargeTransactionRepository;
         this.customerRepository = customerRepository;
         this.telecomPlanRepository = telecomPlanRepository;
+        this.userRepository = userRepository;
 
     }
 
@@ -85,6 +92,30 @@ public class RechargeServiceImpl implements RechargeService{
                         "Customer not found with id: "+customerId
                 ));
         return rechargeTransactionRepository.findByCustomer(customer)
+                .stream()
+                .map(this :: mapToResponse)
+                .toList();
+    }
+
+    @Override
+    public List<RechargeResponse> getMyRechargeHistory() {
+
+        String username = SecurityUtils.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                "User not found with username: "+username
+                        ));
+
+        Customer customer = customerRepository
+                .findByEmail(user.getEmail())
+                .orElseThrow(()-> new ResourceNotFoundException(
+                        "User not found with email: "+user.getEmail()
+                ));
+
+        return rechargeTransactionRepository
+                .findByCustomer(customer)
                 .stream()
                 .map(this :: mapToResponse)
                 .toList();

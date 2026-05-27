@@ -11,4 +11,6 @@ public interface RechargeService {
     List<RechargeResponse> getAllRechargeTransactions();
     RechargeResponse getRechargeTransactionById(Long id);
     List<RechargeResponse> getRechargeTransactionByCustomerId(Long id);
+
+    List<RechargeResponse> getMyRechargeHistory();
 }

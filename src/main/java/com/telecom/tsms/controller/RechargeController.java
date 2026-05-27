@@ -53,4 +53,11 @@ public class RechargeController {
                 rechargeService.getRechargeTransactionByCustomerId(customerId)
         );
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<RechargeResponse>> getMyRechargeHistory(){
+        return ResponseEntity.ok(
+                rechargeService.getMyRechargeHistory()
+        );
+    }
 }

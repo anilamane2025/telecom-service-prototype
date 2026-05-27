@@ -35,6 +35,11 @@ public class SecurityConfig {
                                         "/v3/api-docs/**")
                         .permitAll()
                         .requestMatchers("/api/users/me").authenticated()
+
+                        //CUSTOMERS ONLY
+                        .requestMatchers(HttpMethod.GET,"/api/subscriptions/my").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET,"/api/recharges/my").hasRole("CUSTOMER")
+
                         //ADMIN ONLY
                         .requestMatchers(HttpMethod.POST,"/api/plans/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/plans/**").hasRole("ADMIN")
