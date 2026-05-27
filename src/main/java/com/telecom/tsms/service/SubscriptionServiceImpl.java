@@ -5,14 +5,18 @@ import com.telecom.tsms.dto.SubscriptionResponse;
 import com.telecom.tsms.entity.Customer;
 import com.telecom.tsms.entity.Subscription;
 import com.telecom.tsms.entity.TelecomPlan;
+import com.telecom.tsms.entity.User;
 import com.telecom.tsms.exception.ResourceNotFoundException;
 import com.telecom.tsms.repository.CustomerRepository;
 import com.telecom.tsms.repository.SubscriptionRepository;
 import com.telecom.tsms.repository.TelecomPlanRepository;
+import com.telecom.tsms.repository.UserRepository;
+import com.telecom.tsms.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService{
@@ -22,12 +26,16 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final CustomerRepository customerRepository;
     private final TelecomPlanRepository telecomPlanRepository;
 
+    private final UserRepository userRepository;
+
     public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository,
                                    CustomerRepository customerRepository,
-                                   TelecomPlanRepository telecomPlanRepository){
+                                   TelecomPlanRepository telecomPlanRepository,
+                                   UserRepository userRepository){
         this.subscriptionRepository = subscriptionRepository;
         this.customerRepository = customerRepository;
         this.telecomPlanRepository = telecomPlanRepository;
+        this.userRepository = userRepository;
     }
     @Override
     public SubscriptionResponse createSubscription(SubscriptionRequest request) {
@@ -70,6 +78,26 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     @Override
     public List<SubscriptionResponse> getSubscriptionByCustomerId(Long customerId) {
         return subscriptionRepository.findByCustomerId(customerId)
+                .stream()
+                .map(this :: mapToResponse)
+                .toList();
+    }
+
+    @Override
+    public List<SubscriptionResponse> getMySubscriptions() {
+
+        String username = SecurityUtils.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()->
+                        new ResourceNotFoundException("User not found with username: "+username));
+
+        Customer customer = customerRepository.findByEmail(user.getEmail())
+                .orElseThrow(()->
+                        new ResourceNotFoundException("Customer not found with eamil : "+user.getEmail())
+                );
+
+        return subscriptionRepository.findByCustomer(customer)
                 .stream()
                 .map(this :: mapToResponse)
                 .toList();

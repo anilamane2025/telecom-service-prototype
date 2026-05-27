@@ -52,4 +52,10 @@ public class SubscriptionController {
         subscriptionService.deleteSubscription(id);
         return ResponseEntity.ok("Subscription is successfully deleted ");
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<SubscriptionResponse>> getMySubscriptions(){
+            return ResponseEntity.ok(subscriptionService.getMySubscriptions()
+        );
+    }
 }
