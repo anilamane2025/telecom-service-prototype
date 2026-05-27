@@ -2,6 +2,8 @@ package com.telecom.tsms.controller;
 
 import com.telecom.tsms.dto.LoginRequest;
 import com.telecom.tsms.dto.LoginResponse;
+import com.telecom.tsms.dto.RegisterRequest;
+import com.telecom.tsms.dto.RegisterResponse;
 import com.telecom.tsms.security.JwtUtil;
 import com.telecom.tsms.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,11 @@ public class AuthController {
         }*/
         //return ResponseEntity.status(401).build();
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request){
+        return ResponseEntity.ok(authService.register(request));
     }
 
 }

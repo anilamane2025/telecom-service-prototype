@@ -1,9 +1,9 @@
 package com.telecom.tsms.service;
 
-public class UserService {
+import com.telecom.tsms.dto.UserResponse;
 
-    public void createUser(){
-        System.out.println("FEATURE FINAL VERSION");
-    }
+public interface UserService {
+
+    UserResponse getCurrentUserProfile();
 
 }
