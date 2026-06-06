@@ -47,7 +47,6 @@ public class CustomerServiceImpl implements CustomerService{
 
         existingCustomer.setCustomerCode(customerRequest.getCustomerCode());
         existingCustomer.setFullName(customerRequest.getFullName());
-        existingCustomer.setMobileNumber(customerRequest.getMobileNumber());
         existingCustomer.setState(customerRequest.getState());
         existingCustomer.setEmail(customerRequest.getEmail());
         existingCustomer.setKycStatus(customerRequest.getKycStatus());
@@ -68,7 +67,6 @@ public class CustomerServiceImpl implements CustomerService{
         return Customer.builder()
                 .customerCode(customerRequest.getCustomerCode())
                 .fullName(customerRequest.getFullName())
-                .mobileNumber(customerRequest.getMobileNumber())
                 .email(customerRequest.getEmail())
                 .state(customerRequest.getState())
                 .kycStatus(customerRequest.getKycStatus())
@@ -80,7 +78,6 @@ public class CustomerServiceImpl implements CustomerService{
                 .id(customer.getId())
                 .customerCode(customer.getCustomerCode())
                 .fullName(customer.getFullName())
-                .mobileNumber(customer.getMobileNumber())
                 .email(customer.getEmail())
                 .state(customer.getState())
                 .kycStatus(customer.getKycStatus())

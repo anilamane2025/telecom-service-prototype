@@ -4,6 +4,8 @@ import com.telecom.tsms.enums.KycStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "customer")
 @Getter
@@ -17,14 +19,18 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "customer")
+    private List<MobileNumber> mobileNumbers;
+
     @Column(name = "customer_code",nullable = false,unique = true,length = 30)
     private String customerCode;
 
     @Column(name = "full_name",nullable = false,length = 100)
     private String fullName;
-
-    @Column(name = "mobile_number", nullable = false,unique = true, length = 15)
-    private String mobileNumber;
 
     @Column(nullable = false,length = 100)
     private String email;

@@ -45,19 +45,19 @@ public class RechargeController {
     }
 
     //Get Recharge History By Customer
-    @Operation(summary = "Get recharge by Customer ID")
+    /*@Operation(summary = "Get recharge by Customer ID")
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<RechargeResponse>> getRechargeByCustomerId(
         @PathVariable Long customerId){
         return ResponseEntity.ok(
                 rechargeService.getRechargeTransactionByCustomerId(customerId)
         );
-    }
+    }*/
 
-    @GetMapping("/my")
+    /*@GetMapping("/my")
     public ResponseEntity<List<RechargeResponse>> getMyRechargeHistory(){
         return ResponseEntity.ok(
                 rechargeService.getMyRechargeHistory()
         );
-    }
+    }*/
 }

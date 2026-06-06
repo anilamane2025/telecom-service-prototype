@@ -18,18 +18,14 @@ public class RechargeTransaction {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "plan_id", nullable = false)
-    private TelecomPlan telecomPlan;
+    @JoinColumn(name="subscription_id",nullable = false)
+    private Subscription subscription;
 
     @Column(nullable = false,precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column(name="payment_status",nullable = false,length = 20)
-    private String paymentStatus;
+    @Column(name="transaction_status",nullable = false,length = 20)
+    private String transactionStatus;
 
     @Column(name = "transaction_ref",nullable = false,unique = true,length = 50)
     private String transactionRef;

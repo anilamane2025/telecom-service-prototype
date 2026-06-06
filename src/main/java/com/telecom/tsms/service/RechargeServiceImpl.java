@@ -2,15 +2,9 @@ package com.telecom.tsms.service;
 
 import com.telecom.tsms.dto.RechargeRequest;
 import com.telecom.tsms.dto.RechargeResponse;
-import com.telecom.tsms.entity.Customer;
-import com.telecom.tsms.entity.RechargeTransaction;
-import com.telecom.tsms.entity.TelecomPlan;
-import com.telecom.tsms.entity.User;
+import com.telecom.tsms.entity.*;
 import com.telecom.tsms.exception.ResourceNotFoundException;
-import com.telecom.tsms.repository.CustomerRepository;
-import com.telecom.tsms.repository.RechargeTransactionRepository;
-import com.telecom.tsms.repository.TelecomPlanRepository;
-import com.telecom.tsms.repository.UserRepository;
+import com.telecom.tsms.repository.*;
 import com.telecom.tsms.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,36 +19,35 @@ public class RechargeServiceImpl implements RechargeService{
     private final CustomerRepository customerRepository;
     private final TelecomPlanRepository telecomPlanRepository;
 
+    private final SubscriptionRepository subscriptionRepository;
+
     private final UserRepository  userRepository;
 
     public RechargeServiceImpl(RechargeTransactionRepository rechargeTransactionRepository,
                                CustomerRepository customerRepository,
                                TelecomPlanRepository telecomPlanRepository,
+                               SubscriptionRepository subscriptionRepository,
                                UserRepository userRepository){
 
         this.rechargeTransactionRepository = rechargeTransactionRepository;
         this.customerRepository = customerRepository;
         this.telecomPlanRepository = telecomPlanRepository;
         this.userRepository = userRepository;
-
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     @Override
     public RechargeResponse processRecharge(RechargeRequest request) {
 
-        Customer customer = customerRepository.findById(request.getCustomerId())
+        Subscription subscription = subscriptionRepository.findById(request.getSubscriptionId())
                 .orElseThrow(()-> new ResourceNotFoundException(
-                        "Customer not found with id: "+request.getCustomerId()));
+                        "Subscription not found with id: "+request.getSubscriptionId()));
 
-        TelecomPlan plan = telecomPlanRepository.findById(request.getPlanId())
-                .orElseThrow(()-> new ResourceNotFoundException(
-                        "Plan not found with id: "+request.getPlanId()));
 
         RechargeTransaction transaction = RechargeTransaction.builder()
-                .customer(customer)
-                .telecomPlan(plan)
+                .subscription(subscription)
                 .amount(request.getAmount())
-                .paymentStatus(request.getPaymentStatus())
+                .transactionStatus(request.getPaymentStatus())
                 .transactionRef(request.getTransactionRef())
                 .transactionDate(LocalDateTime.now())
                 .build();
@@ -85,7 +78,7 @@ public class RechargeServiceImpl implements RechargeService{
         return mapToResponse(transaction);
     }
 
-    @Override
+    /*@Override
     public List<RechargeResponse> getRechargeTransactionByCustomerId(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -95,9 +88,9 @@ public class RechargeServiceImpl implements RechargeService{
                 .stream()
                 .map(this :: mapToResponse)
                 .toList();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public List<RechargeResponse> getMyRechargeHistory() {
 
         String username = SecurityUtils.getCurrentUsername();
@@ -119,18 +112,21 @@ public class RechargeServiceImpl implements RechargeService{
                 .stream()
                 .map(this :: mapToResponse)
                 .toList();
-    }
+    }*/
 
 
     private RechargeResponse mapToResponse(RechargeTransaction transaction){
+
+        Subscription subscription = transaction.getSubscription();
+
         return RechargeResponse.builder()
                 .id(transaction.getId())
-                .customerId(transaction.getCustomer().getId())
-                .customerName(transaction.getCustomer().getFullName())
-                .planId(transaction.getTelecomPlan().getId())
-                .planName(transaction.getTelecomPlan().getPlanName())
+                .customerId(subscription.getMobileNumber().getCustomer().getId())
+                .customerName(subscription.getMobileNumber().getCustomer().getFullName())
+                .planId(subscription.getTelecomPlan().getId())
+                .planName(subscription.getTelecomPlan().getPlanName())
                 .amount(transaction.getAmount())
-                .paymentStatus(transaction.getPaymentStatus())
+                .paymentStatus(transaction.getTransactionStatus())
                 .transactionRef(transaction.getTransactionRef())
                 .transactionDate(transaction.getTransactionDate())
                 .build();

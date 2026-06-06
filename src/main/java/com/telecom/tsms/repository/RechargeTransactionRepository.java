@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface RechargeTransactionRepository extends JpaRepository<RechargeTransaction,Long> {
 
-    List<RechargeTransaction> findByCustomer(Customer customer);
+    //List<RechargeTransaction> findByCustomer(Customer customer);
 
 }

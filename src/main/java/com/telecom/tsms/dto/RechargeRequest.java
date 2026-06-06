@@ -10,11 +10,9 @@ import java.math.BigDecimal;
 @Setter
 public class RechargeRequest {
 
-    @NotNull(message = "Customer ID is required")
-    private Long customerId;
 
-    @NotNull(message = "Plan ID is required")
-    private Long planId;
+    @NotNull(message = "Subscription ID is required")
+    private Long subscriptionId;
 
     @NotNull(message = "Amount is required")
     private BigDecimal amount;

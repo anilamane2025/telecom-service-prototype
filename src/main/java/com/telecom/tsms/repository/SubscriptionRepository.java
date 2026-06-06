@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription,Long> {
 
-    List<Subscription> findByCustomer(Customer customor);
-    Optional<Subscription> findByCustomerAndStatus(Customer customer, String status);
+    //List<Subscription> findByCustomer(Customer customor);
+    //Optional<Subscription> findByCustomerAndStatus(Customer customer, String status);
 
-    List<Subscription> findByCustomerId(Long customerId);
+    //List<Subscription> findByCustomerId(Long customerId);
 }

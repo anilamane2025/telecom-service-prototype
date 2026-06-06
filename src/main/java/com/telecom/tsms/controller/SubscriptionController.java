@@ -40,11 +40,11 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.getSubscriptionById(id));
     }
 
-    @Operation(summary = "Get subscription by Customer ID")
+    /*@Operation(summary = "Get subscription by Customer ID")
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<SubscriptionResponse>> getByCustomerById(@PathVariable Long customerId){
         return ResponseEntity.ok(subscriptionService.getSubscriptionByCustomerId(customerId));
-    }
+    }*/
 
     @Operation(summary = "Delete subscription by ID")
     @DeleteMapping("/{id}")
@@ -53,9 +53,9 @@ public class SubscriptionController {
         return ResponseEntity.ok("Subscription is successfully deleted ");
     }
 
-    @GetMapping("/my")
+    /*@GetMapping("/my")
     public ResponseEntity<List<SubscriptionResponse>> getMySubscriptions(){
             return ResponseEntity.ok(subscriptionService.getMySubscriptions()
         );
-    }
+    }*/
 }

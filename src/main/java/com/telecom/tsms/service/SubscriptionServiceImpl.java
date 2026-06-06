@@ -2,15 +2,9 @@ package com.telecom.tsms.service;
 
 import com.telecom.tsms.dto.SubscriptionRequest;
 import com.telecom.tsms.dto.SubscriptionResponse;
-import com.telecom.tsms.entity.Customer;
-import com.telecom.tsms.entity.Subscription;
-import com.telecom.tsms.entity.TelecomPlan;
-import com.telecom.tsms.entity.User;
+import com.telecom.tsms.entity.*;
 import com.telecom.tsms.exception.ResourceNotFoundException;
-import com.telecom.tsms.repository.CustomerRepository;
-import com.telecom.tsms.repository.SubscriptionRepository;
-import com.telecom.tsms.repository.TelecomPlanRepository;
-import com.telecom.tsms.repository.UserRepository;
+import com.telecom.tsms.repository.*;
 import com.telecom.tsms.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,36 +17,43 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
 
     private final SubscriptionRepository subscriptionRepository;
-    private final CustomerRepository customerRepository;
     private final TelecomPlanRepository telecomPlanRepository;
 
+    private final MobileNumberRepository mobileNumberRepository;
     private final UserRepository userRepository;
 
     public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository,
-                                   CustomerRepository customerRepository,
                                    TelecomPlanRepository telecomPlanRepository,
-                                   UserRepository userRepository){
+                                   UserRepository userRepository,
+                                   MobileNumberRepository mobileNumberRepository){
         this.subscriptionRepository = subscriptionRepository;
-        this.customerRepository = customerRepository;
         this.telecomPlanRepository = telecomPlanRepository;
         this.userRepository = userRepository;
+        this.mobileNumberRepository = mobileNumberRepository;
     }
     @Override
     public SubscriptionResponse createSubscription(SubscriptionRequest request) {
-        Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(()->new ResourceNotFoundException("Customer not found with id: "+request.getCustomerId()));
+        /*Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(()->new ResourceNotFoundException("Customer not found with id: "+request.getCustomerId()));*/
+
+        MobileNumber mobileNumber = mobileNumberRepository.findById(request.getMobileNumberId())
+                .orElseThrow(()->new ResourceNotFoundException("Mobile Number not found with id: "+request.getMobileNumberId()));
 
         TelecomPlan plan = telecomPlanRepository.findById(request.getPlanId())
                 .orElseThrow(()->new ResourceNotFoundException(("Plan not found with id"+request.getPlanId())));
 
-        LocalDate expiryDate = request.getActivationDate().plusDays(plan.getValidityDays());
+        //LocalDate expiryDate = request.getActivationDate().plusDays(plan.getValidityDays());
+        LocalDate expiryDate = request.getStartDate().plusDays(plan.getValidityDays());
 
         Subscription subscription = Subscription.builder()
-                .customer(customer)
+                .mobileNumber(mobileNumber)
                 .telecomPlan(plan)
-                .activationDate(request.getActivationDate())
+                .startDate(request.getStartDate())
                 .expiryDate(expiryDate)
                 .status(request.getStatus())
+                .totalRechargeCount(0)
+                .autoRenew(false)
+                .currentPlanPrice(plan.getPrice())
                 .build();
 
         Subscription saved = subscriptionRepository.save(subscription);
@@ -75,15 +76,15 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return mapToResponse(subscription);
     }
 
-    @Override
+    /*@Override
     public List<SubscriptionResponse> getSubscriptionByCustomerId(Long customerId) {
         return subscriptionRepository.findByCustomerId(customerId)
                 .stream()
                 .map(this :: mapToResponse)
                 .toList();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public List<SubscriptionResponse> getMySubscriptions() {
 
         String username = SecurityUtils.getCurrentUsername();
@@ -92,16 +93,23 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .orElseThrow(()->
                         new ResourceNotFoundException("User not found with username: "+username));
 
-        Customer customer = customerRepository.findByEmail(user.getEmail())
+        *//*Customer customer = customerRepository.findByEmail(user.getEmail())
                 .orElseThrow(()->
                         new ResourceNotFoundException("Customer not found with eamil : "+user.getEmail())
+                );*//*
+
+        MobileNumber mobileNumber = mobileNumberRepository.findById(user.getId())
+                .orElseThrow(()->
+                        new ResourceNotFoundException("Mobile Number not found with id : "+user.getId())
                 );
 
-        return subscriptionRepository.findByCustomer(customer)
+        return subscriptionRepository.findByCustomer(mobileNumber)
                 .stream()
                 .map(this :: mapToResponse)
                 .toList();
-    }
+
+
+    }*/
 
     @Override
     public void deleteSubscription(Long id) {
@@ -113,11 +121,11 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private SubscriptionResponse mapToResponse(Subscription sub){
          return SubscriptionResponse.builder()
                  .id(sub.getId())
-                 .customerId(sub.getCustomer().getId())
-                 .customerName(sub.getCustomer().getFullName())
+                 .customerId(sub.getMobileNumber().getCustomer().getId())
+                 .customerName(sub.getMobileNumber().getCustomer().getFullName())
                  .planId(sub.getTelecomPlan().getId())
                  .planName(sub.getTelecomPlan().getPlanName())
-                 .activationDate(sub.getActivationDate())
+                 .activationDate(sub.getStartDate())
                  .expiryDate(sub.getExpiryDate())
                  .status(sub.getStatus())
                  .build();
