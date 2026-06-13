@@ -40,7 +40,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .orElseThrow(()->new ResourceNotFoundException("Mobile Number not found with id: "+request.getMobileNumberId()));
 
         TelecomPlan plan = telecomPlanRepository.findById(request.getPlanId())
-                .orElseThrow(()->new ResourceNotFoundException(("Plan not found with id"+request.getPlanId())));
+                .orElseThrow(()->new ResourceNotFoundException(("Plan not found with id: "+request.getPlanId())));
 
         //LocalDate expiryDate = request.getActivationDate().plusDays(plan.getValidityDays());
         LocalDate expiryDate = request.getStartDate().plusDays(plan.getValidityDays());
@@ -51,7 +51,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .startDate(request.getStartDate())
                 .expiryDate(expiryDate)
                 .status(request.getStatus())
-                .totalRechargeCount(0)
+                .totalRechargeCount(1)
+                .lastRechargeDate(request.getStartDate())
                 .autoRenew(false)
                 .currentPlanPrice(plan.getPrice())
                 .build();
@@ -112,6 +113,33 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     }*/
 
     @Override
+    public SubscriptionResponse updateSubscription(Long id, SubscriptionRequest request) {
+
+        Subscription existingSubscription = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Subscription not found for update with id "+id));
+
+        MobileNumber mobileNumber = mobileNumberRepository.findById(request.getMobileNumberId())
+                .orElseThrow(() -> new ResourceNotFoundException("Mobile not found with id "+id));
+
+        TelecomPlan telecomPlan = telecomPlanRepository.findById(request.getPlanId())
+                .orElseThrow(() -> new ResourceNotFoundException("Telecom plan not found with id "+id));
+
+        LocalDate expiryDate = request.getStartDate().plusDays(telecomPlan.getValidityDays());
+
+        existingSubscription.setMobileNumber(mobileNumber);
+        existingSubscription.setTelecomPlan(telecomPlan);
+        existingSubscription.setStatus(request.getStatus());
+        existingSubscription.setExpiryDate(expiryDate);
+        existingSubscription.setLastRechargeDate(request.getStartDate());
+        existingSubscription.setCurrentPlanPrice(telecomPlan.getPrice());
+        existingSubscription.setStartDate(request.getStartDate());
+
+        Subscription updatedSubscription = subscriptionRepository.save(existingSubscription);
+
+        return mapToResponse(updatedSubscription);
+    }
+
+    @Override
     public void deleteSubscription(Long id) {
         Subscription subscription = subscriptionRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Subscription not found with id: "+id));
@@ -121,11 +149,12 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private SubscriptionResponse mapToResponse(Subscription sub){
          return SubscriptionResponse.builder()
                  .id(sub.getId())
-                 .customerId(sub.getMobileNumber().getCustomer().getId())
-                 .customerName(sub.getMobileNumber().getCustomer().getFullName())
+                 .mobileNumberId(sub.getMobileNumber().getId())
+                 .mobileNumber(sub.getMobileNumber().getMobileNumber())
                  .planId(sub.getTelecomPlan().getId())
                  .planName(sub.getTelecomPlan().getPlanName())
-                 .activationDate(sub.getStartDate())
+                 .startDate(sub.getStartDate())
+                 .currentPlanPrice(sub.getCurrentPlanPrice())
                  .expiryDate(sub.getExpiryDate())
                  .status(sub.getStatus())
                  .build();

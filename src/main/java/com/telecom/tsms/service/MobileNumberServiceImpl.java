@@ -63,7 +63,7 @@ public class MobileNumberServiceImpl implements MobileNumberService{
     public MobileNumberResponse updateMobileNumber(Long id, MobileNumberRequest request){
         MobileNumber existingMobileNumber = mobileNumberRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException(
-                        "MobileNumber not found for deletion with id"+id));
+                        "MobileNumber not found for update with id"+id));
 
         existingMobileNumber.setMobileNumber(request.getMobileNumber());
         existingMobileNumber.setStatus(request.getStatus());

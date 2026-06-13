@@ -6,6 +6,7 @@ import com.telecom.tsms.service.SubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,8 @@ public class SubscriptionController {
     @Operation(summary = "Create subscription")
     @PostMapping
     public ResponseEntity<SubscriptionResponse> createSubscription(@Valid @RequestBody SubscriptionRequest request){
-        return ResponseEntity.ok(subscriptionService.createSubscription(request));
+        //return ResponseEntity.ok(subscriptionService.createSubscription(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.createSubscription(request));
     }
 
     @Operation(summary = "Get all subscription")
@@ -45,6 +47,14 @@ public class SubscriptionController {
     public ResponseEntity<List<SubscriptionResponse>> getByCustomerById(@PathVariable Long customerId){
         return ResponseEntity.ok(subscriptionService.getSubscriptionByCustomerId(customerId));
     }*/
+
+    @Operation(summary = "Update Subscription by Id")
+    @PutMapping("/{id}")
+    public ResponseEntity<SubscriptionResponse> updateSubscription(
+            @PathVariable Long id,
+            @Valid @RequestBody SubscriptionRequest request){
+        return ResponseEntity.ok(subscriptionService.updateSubscription(id,request));
+    }
 
     @Operation(summary = "Delete subscription by ID")
     @DeleteMapping("/{id}")
