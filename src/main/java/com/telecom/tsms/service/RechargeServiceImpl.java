@@ -46,13 +46,26 @@ public class RechargeServiceImpl implements RechargeService{
 
         RechargeTransaction transaction = RechargeTransaction.builder()
                 .subscription(subscription)
-                .amount(request.getAmount())
-                .transactionStatus(request.getPaymentStatus())
-                .transactionRef(request.getTransactionRef())
+                .amount(subscription.getCurrentPlanPrice())
+                .transactionStatus("SUCCESS")
+                .transactionRef("TXN"+System.currentTimeMillis())
                 .transactionDate(LocalDateTime.now())
                 .build();
 
         RechargeTransaction savedTransaction = rechargeTransactionRepository.save(transaction);
+
+        LocalDate rechargeDate = LocalDate.now();
+
+        subscription.setLastRechargeDate(rechargeDate);
+
+        subscription.setExpiryDate(
+                rechargeDate.plusDays(subscription.getTelecomPlan().getValidityDays())
+        );
+        subscription.setTotalRechargeCount(
+                subscription.getTotalRechargeCount()+1
+        );
+
+        subscriptionRepository.save(subscription);
 
         return mapToResponse(savedTransaction);
     }
@@ -121,12 +134,11 @@ public class RechargeServiceImpl implements RechargeService{
 
         return RechargeResponse.builder()
                 .id(transaction.getId())
-                .customerId(subscription.getMobileNumber().getCustomer().getId())
-                .customerName(subscription.getMobileNumber().getCustomer().getFullName())
-                .planId(subscription.getTelecomPlan().getId())
+                .subscriptionId(subscription.getId())
+                .mobileNumber(subscription.getMobileNumber().getMobileNumber())
                 .planName(subscription.getTelecomPlan().getPlanName())
                 .amount(transaction.getAmount())
-                .paymentStatus(transaction.getTransactionStatus())
+                .transactionStatus(transaction.getTransactionStatus())
                 .transactionRef(transaction.getTransactionRef())
                 .transactionDate(transaction.getTransactionDate())
                 .build();
