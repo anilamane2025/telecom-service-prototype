@@ -23,17 +23,21 @@ public class RechargeServiceImpl implements RechargeService{
 
     private final UserRepository  userRepository;
 
+    private final NotificationService notificationService;
+
     public RechargeServiceImpl(RechargeTransactionRepository rechargeTransactionRepository,
                                CustomerRepository customerRepository,
                                TelecomPlanRepository telecomPlanRepository,
                                SubscriptionRepository subscriptionRepository,
-                               UserRepository userRepository){
+                               UserRepository userRepository,
+                               NotificationService notificationService){
 
         this.rechargeTransactionRepository = rechargeTransactionRepository;
         this.customerRepository = customerRepository;
         this.telecomPlanRepository = telecomPlanRepository;
         this.userRepository = userRepository;
         this.subscriptionRepository = subscriptionRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -53,6 +57,8 @@ public class RechargeServiceImpl implements RechargeService{
                 .build();
 
         RechargeTransaction savedTransaction = rechargeTransactionRepository.save(transaction);
+
+        notificationService.sendRechargeSuccessNotification(savedTransaction);
 
         LocalDate rechargeDate = LocalDate.now();
 

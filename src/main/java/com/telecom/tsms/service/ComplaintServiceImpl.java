@@ -20,14 +20,16 @@ import java.util.stream.Collectors;
 public class ComplaintServiceImpl implements ComplaintService{
 
 
-    private ComplaintRepository complaintRepository;
-    private MobileNumberRepository mobileNumberRepository;
+    private final ComplaintRepository complaintRepository;
+    private final MobileNumberRepository mobileNumberRepository;
 
-
+    private final NotificationService notificationService;
     public ComplaintServiceImpl(ComplaintRepository complaintRepository,
-                                MobileNumberRepository mobileNumberRepository){
+                                MobileNumberRepository mobileNumberRepository,
+                                NotificationService notificationService){
         this.complaintRepository = complaintRepository;
         this.mobileNumberRepository = mobileNumberRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class ComplaintServiceImpl implements ComplaintService{
                     .build();
 
             Complaint saved = complaintRepository.save(complaint);
-
+            notificationService.sendComplaintCreatedNotification(saved);
             return mapToResponse(saved);
     }
 
@@ -98,6 +100,7 @@ public class ComplaintServiceImpl implements ComplaintService{
         complaint.setResolvedAt(LocalDateTime.now());
 
         Complaint updated = complaintRepository.save(complaint);
+        notificationService.sendComplaintResolvedNotification(updated);
         return mapToResponse(updated);
     }
 
