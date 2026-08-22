@@ -1,5 +1,7 @@
 package com.telecom.tsms.entity;
 
+import com.telecom.tsms.enums.PaymentMode;
+import com.telecom.tsms.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,11 +25,13 @@ public class Payment {
     @JoinColumn(name="recharge_transaction_id",nullable = false)
     private RechargeTransaction rechargeTransaction;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="payment_mode",nullable = false)
-    private String paymentMode;
+    private PaymentMode paymentMode;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="payment_status",nullable = false)
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
 
     @Column(name="payment_gateway",nullable = false)
     private String paymentGateway;
