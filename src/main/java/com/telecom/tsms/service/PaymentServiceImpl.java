@@ -6,6 +6,7 @@ import com.telecom.tsms.entity.Payment;
 import com.telecom.tsms.entity.RechargeTransaction;
 import com.telecom.tsms.enums.PaymentMode;
 import com.telecom.tsms.enums.PaymentStatus;
+import com.telecom.tsms.exception.PaymentAlreadyExistsException;
 import com.telecom.tsms.exception.ResourceNotFoundException;
 import com.telecom.tsms.repository.PaymentRepository;
 import com.telecom.tsms.repository.RechargeTransactionRepository;
@@ -41,7 +42,7 @@ public class PaymentServiceImpl implements PaymentService{
 
         Optional<Payment> existingPayment = paymentRepository.findByRechargeTransaction_Id(request.getRechargeTransactionId());
         if(existingPayment.isPresent()){
-            throw new IllegalArgumentException(
+            throw new PaymentAlreadyExistsException(
                     "Payment already exists for recharge transaction id: "
                             + request.getRechargeTransactionId()
             );
