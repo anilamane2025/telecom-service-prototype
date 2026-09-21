@@ -17,7 +17,20 @@ public class CustomerPersistenceAdapter implements LoadCustomerPort {
     }
 
     @Override
-    public Optional<Customer> findById(Long id) {
-        return customerRepository.findById(id);
+    public Optional<com.telecom.tsms.domain.model.Customer> findById(Long id) {
+        return customerRepository.findById(id)
+                .map(this::mapToDomain);
     }
+
+    private com.telecom.tsms.domain.model.Customer mapToDomain(Customer entity) {
+        return com.telecom.tsms.domain.model.Customer.builder()
+                .id(entity.getId())
+                .customerCode(entity.getCustomerCode())
+                .fullName(entity.getFullName())
+                .email(entity.getEmail())
+                .state(entity.getState())
+                .kycStatus(entity.getKycStatus())
+                .build();
+    }
+
 }

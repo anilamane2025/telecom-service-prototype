@@ -46,9 +46,9 @@ public class CustomerServiceImpl implements CustomerService{
     }*/
     @Override
     public CustomerResponse getCustomerById(Long id) {
-        Customer customer  = loadCustomerPort.findById(id)
+        com.telecom.tsms.domain.model.Customer customer  = loadCustomerPort.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("customer not found with id: "+id));
-        return mapToResponse(customer);
+        return mapDomainToResponse(customer);
     }
 
     @Override
@@ -94,4 +94,18 @@ public class CustomerServiceImpl implements CustomerService{
                 .kycStatus(customer.getKycStatus())
                 .build();
     }
+
+    private CustomerResponse mapDomainToResponse(
+            com.telecom.tsms.domain.model.Customer customer) {
+
+        return CustomerResponse.builder()
+                .id(customer.getId())
+                .customerCode(customer.getCustomerCode())
+                .fullName(customer.getFullName())
+                .email(customer.getEmail())
+                .state(customer.getState())
+                .kycStatus(customer.getKycStatus())
+                .build();
+    }
+
 }
