@@ -4,6 +4,7 @@ import com.telecom.tsms.dto.CustomerRequest;
 import com.telecom.tsms.dto.CustomerResponse;
 import com.telecom.tsms.entity.Customer;
 import com.telecom.tsms.exception.ResourceNotFoundException;
+import com.telecom.tsms.port.out.LoadCustomerPort;
 import com.telecom.tsms.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,13 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepository customerRepository;
+    private final LoadCustomerPort loadCustomerPort;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository){
+    public CustomerServiceImpl(CustomerRepository customerRepository,
+                               LoadCustomerPort loadCustomerPort){
+
         this.customerRepository = customerRepository;
+        this.loadCustomerPort = loadCustomerPort;
     }
 
     @Override
@@ -33,9 +38,15 @@ public class CustomerServiceImpl implements CustomerService{
                 .toList();
     }
 
-    @Override
+    /*@Override
     public CustomerResponse getCustomerById(Long id) {
         Customer customer  = customerRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("customer not found with id: "+id));
+        return mapToResponse(customer);
+    }*/
+    @Override
+    public CustomerResponse getCustomerById(Long id) {
+        Customer customer  = loadCustomerPort.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("customer not found with id: "+id));
         return mapToResponse(customer);
     }
