@@ -5,6 +5,7 @@ import com.telecom.tsms.port.out.LoadCustomerPort;
 import com.telecom.tsms.repository.CustomerRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -20,6 +21,14 @@ public class CustomerPersistenceAdapter implements LoadCustomerPort {
     public Optional<com.telecom.tsms.domain.model.Customer> findById(Long id) {
         return customerRepository.findById(id)
                 .map(this::mapToDomain);
+    }
+
+    @Override
+    public List<com.telecom.tsms.domain.model.Customer> findAll() {
+        return customerRepository.findAll()
+                .stream()
+                .map(this :: mapToDomain)
+                .toList();
     }
 
     private com.telecom.tsms.domain.model.Customer mapToDomain(Customer entity) {

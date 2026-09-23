@@ -30,13 +30,13 @@ public class CustomerServiceImpl implements CustomerService{
         return mapToResponse(savedCustomer);
     }
 
-    @Override
+    /*@Override
     public List<CustomerResponse> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
         return customers.stream()
                 .map(this :: mapToResponse)
                 .toList();
-    }
+    }*/
 
     /*@Override
     public CustomerResponse getCustomerById(Long id) {
@@ -44,6 +44,14 @@ public class CustomerServiceImpl implements CustomerService{
                 .orElseThrow(()->new ResourceNotFoundException("customer not found with id: "+id));
         return mapToResponse(customer);
     }*/
+
+    public List<CustomerResponse> getAllCustomers() {
+        List<com.telecom.tsms.domain.model.Customer> customers = loadCustomerPort.findAll();
+        return customers.stream()
+                .map(this :: mapDomainToResponse)
+                .toList();
+    }
+
     @Override
     public CustomerResponse getCustomerById(Long id) {
         com.telecom.tsms.domain.model.Customer customer  = loadCustomerPort.findById(id)
