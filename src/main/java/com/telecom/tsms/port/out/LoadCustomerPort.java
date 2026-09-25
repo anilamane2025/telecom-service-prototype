@@ -11,4 +11,6 @@ public interface LoadCustomerPort {
 
     List<Customer> findAll();
 
+    Customer save(Customer customer);
+
 }

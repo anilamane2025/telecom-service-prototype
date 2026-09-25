@@ -31,6 +31,13 @@ public class CustomerPersistenceAdapter implements LoadCustomerPort {
                 .toList();
     }
 
+    @Override
+    public com.telecom.tsms.domain.model.Customer save(com.telecom.tsms.domain.model.Customer customer) {
+        Customer entity = mapToEntity(customer);
+        Customer savedEntity = customerRepository.save(entity);
+        return mapToDomain(savedEntity);
+    }
+
     private com.telecom.tsms.domain.model.Customer mapToDomain(Customer entity) {
         return com.telecom.tsms.domain.model.Customer.builder()
                 .id(entity.getId())
@@ -39,6 +46,19 @@ public class CustomerPersistenceAdapter implements LoadCustomerPort {
                 .email(entity.getEmail())
                 .state(entity.getState())
                 .kycStatus(entity.getKycStatus())
+                .build();
+    }
+
+    private Customer mapToEntity(
+        com.telecom.tsms.domain.model.Customer customer){
+
+        return Customer.builder()
+                .id(customer.getId())
+                .customerCode(customer.getCustomerCode())
+                .fullName(customer.getFullName())
+                .email(customer.getEmail())
+                .state(customer.getState())
+                .kycStatus(customer.getKycStatus())
                 .build();
     }
 

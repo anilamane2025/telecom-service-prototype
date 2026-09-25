@@ -25,9 +25,17 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public CustomerResponse createCustomer(CustomerRequest customerRequest) {
-        Customer customer = mapToEntity(customerRequest);
+        //without hexagonal
+
+        /*Customer customer = mapToEntity(customerRequest);
         Customer savedCustomer = customerRepository.save(customer);
-        return mapToResponse(savedCustomer);
+        return mapToResponse(savedCustomer);*/
+
+        //with hexagonal
+
+        com.telecom.tsms.domain.model.Customer customer = mapRequestToDomain(customerRequest);
+        com.telecom.tsms.domain.model.Customer savedCustomer = loadCustomerPort.save(customer);
+        return mapDomainToResponse(savedCustomer);
     }
 
     /*@Override
@@ -116,4 +124,14 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
     }
 
+    private com.telecom.tsms.domain.model.Customer mapRequestToDomain(
+            CustomerRequest request){
+        return com.telecom.tsms.domain.model.Customer.builder()
+                .customerCode(request.getCustomerCode())
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .state(request.getState())
+                .kycStatus(request.getKycStatus())
+                .build();
+    }
 }
