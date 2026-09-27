@@ -25,34 +25,12 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public CustomerResponse createCustomer(CustomerRequest customerRequest) {
-        //without hexagonal
-
-        /*Customer customer = mapToEntity(customerRequest);
-        Customer savedCustomer = customerRepository.save(customer);
-        return mapToResponse(savedCustomer);*/
-
-        //with hexagonal
-
         com.telecom.tsms.domain.model.Customer customer = mapRequestToDomain(customerRequest);
         com.telecom.tsms.domain.model.Customer savedCustomer = loadCustomerPort.save(customer);
         return mapDomainToResponse(savedCustomer);
     }
 
-    /*@Override
-    public List<CustomerResponse> getAllCustomers() {
-        List<Customer> customers = customerRepository.findAll();
-        return customers.stream()
-                .map(this :: mapToResponse)
-                .toList();
-    }*/
-
-    /*@Override
-    public CustomerResponse getCustomerById(Long id) {
-        Customer customer  = customerRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("customer not found with id: "+id));
-        return mapToResponse(customer);
-    }*/
-
+    @Override
     public List<CustomerResponse> getAllCustomers() {
         List<com.telecom.tsms.domain.model.Customer> customers = loadCustomerPort.findAll();
         return customers.stream()
@@ -88,16 +66,6 @@ public class CustomerServiceImpl implements CustomerService{
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found with Id "+id));
 
         customerRepository.delete(existingCustomer);
-    }
-
-    private Customer mapToEntity(CustomerRequest customerRequest){
-        return Customer.builder()
-                .customerCode(customerRequest.getCustomerCode())
-                .fullName(customerRequest.getFullName())
-                .email(customerRequest.getEmail())
-                .state(customerRequest.getState())
-                .kycStatus(customerRequest.getKycStatus())
-                .build();
     }
 
     private CustomerResponse mapToResponse(Customer customer){
