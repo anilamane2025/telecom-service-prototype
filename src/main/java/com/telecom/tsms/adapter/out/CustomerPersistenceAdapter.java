@@ -38,6 +38,11 @@ public class CustomerPersistenceAdapter implements LoadCustomerPort {
         return mapToDomain(savedEntity);
     }
 
+    @Override
+    public void deleteById(Long id) {
+        customerRepository.deleteById(id);
+    }
+
     private com.telecom.tsms.domain.model.Customer mapToDomain(Customer entity) {
         return com.telecom.tsms.domain.model.Customer.builder()
                 .id(entity.getId())

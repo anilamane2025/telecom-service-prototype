@@ -47,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public CustomerResponse updateCustomer(Long id, CustomerRequest customerRequest) {
-        Customer existingCustomer = customerRepository.findById(id)
+        com.telecom.tsms.domain.model.Customer existingCustomer = loadCustomerPort.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Customer id not found with id : "+id));
 
         existingCustomer.setCustomerCode(customerRequest.getCustomerCode());
@@ -56,16 +56,16 @@ public class CustomerServiceImpl implements CustomerService{
         existingCustomer.setEmail(customerRequest.getEmail());
         existingCustomer.setKycStatus(customerRequest.getKycStatus());
 
-        Customer updatedCustomer = customerRepository.save(existingCustomer);
-        return mapToResponse(updatedCustomer);
+        com.telecom.tsms.domain.model.Customer updatedCustomer = loadCustomerPort.save(existingCustomer);
+        return mapDomainToResponse(updatedCustomer);
     }
 
     @Override
     public void deleleteCustomer(Long id) {
-        Customer existingCustomer = customerRepository.findById(id)
+        com.telecom.tsms.domain.model.Customer existingCustomer = loadCustomerPort.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Customer not found with Id "+id));
 
-        customerRepository.delete(existingCustomer);
+        loadCustomerPort.deleteById(id);
     }
 
     private CustomerResponse mapToResponse(Customer customer){

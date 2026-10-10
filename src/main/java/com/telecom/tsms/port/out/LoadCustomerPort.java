@@ -13,4 +13,5 @@ public interface LoadCustomerPort {
 
     Customer save(Customer customer);
 
+    void deleteById(Long id);
 }
