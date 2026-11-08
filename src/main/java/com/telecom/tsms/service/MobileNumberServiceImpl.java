@@ -5,6 +5,7 @@ import com.telecom.tsms.dto.MobileNumberResponse;
 import com.telecom.tsms.entity.Customer;
 import com.telecom.tsms.entity.MobileNumber;
 import com.telecom.tsms.exception.ResourceNotFoundException;
+import com.telecom.tsms.port.out.MobileNumberPort;
 import com.telecom.tsms.repository.CustomerRepository;
 import com.telecom.tsms.repository.MobileNumberRepository;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,14 @@ public class MobileNumberServiceImpl implements MobileNumberService{
 
     private MobileNumberRepository mobileNumberRepository;
     private CustomerRepository customerRepository;
+    private MobileNumberPort mobileNumberPort;
 
     public MobileNumberServiceImpl(MobileNumberRepository mobileNumberRepository,
-                                   CustomerRepository customerRepository){
+                                   CustomerRepository customerRepository,
+                                   MobileNumberPort mobileNumberPort){
         this.mobileNumberRepository = mobileNumberRepository;
         this.customerRepository = customerRepository;
+        this.mobileNumberPort = mobileNumberPort;
     }
 
     @Override
